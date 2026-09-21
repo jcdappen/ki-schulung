@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>KI-Schulung – Gemeinde in der Konkordia</title>
+<style>
+  @font-face { font-family: "Back to Black"; src: url("assets/fonts/Back_to_Black.ttf") format("truetype"); font-display: swap; }
+  @font-face { font-family: "Gothic 720"; src: url("assets/fonts/gothic720l.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+  @font-face { font-family: "Gothic 720"; src: url("assets/fonts/gothic725b.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+
+  :root {
+    --rot: #bb2232;
+    --rot-dunkel: #70141e;
+    --olive: #677d46;
+    --gold: #8e7629;
+    --grau-dunkel: #4d4d4d;
+    --grau: #999999;
+    --grau-hell: #e6e6e6;
+    --creme: #faeec7;
+    --mint: #e6f1d6;
+    --rosa-hell: #ebbdc2;
+    --text: #000000;
+    --bg: #ffffff;
+    --font-text: "Gothic 720", "Century Gothic", "Avenir Next", Arial, sans-serif;
+    --font-head: "Back to Black", "Arial Black", Impact, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-text);
+    font-size: 18px;
+    line-height: 1.55;
+  }
+
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+  .logo-top { display: block; width: min(100%, 300px); height: auto; margin: 28px auto 28px; }
+
+  /* Fortschritt */
+  .progress { display: flex; margin: 0 0 32px; padding: 0; list-style: none; }
+  .progress li { flex: 1; text-align: center; font-size: 13px; color: var(--grau); position: relative; }
+  .progress li::before {
+    content: attr(data-n);
+    display: block; width: 32px; height: 32px; line-height: 28px; margin: 0 auto 6px;
+    border: 2px solid var(--grau); color: var(--grau); background: #fff;
+    font-family: var(--font-head); font-size: 16px; position: relative; z-index: 1;
+  }
+  .progress li::after {
+    content: ""; position: absolute; top: 15px; left: calc(50% + 16px); right: calc(-50% + 16px);
+    height: 2px; background: var(--grau-hell);
+  }
+  .progress li:last-child::after { display: none; }
+  .progress li.done { color: var(--text); }
+  .progress li.done::before { background: var(--rot); border-color: var(--rot); color: #fff; content: "\2713"; font-family: var(--font-text); font-weight: 700; }
+  .progress li.done::after { background: var(--rot); }
+  .progress li.current { color: var(--text); font-weight: 700; }
+  .progress li.current::before { border-color: var(--rot); color: var(--rot); }
+
+  /* Überschrift */
+  .step-head { display: flex; align-items: center; gap: 16px; margin: 0 0 20px; }
+  .badge {
+    flex: none; width: 64px; height: 64px; border-radius: 50%;
+    background: var(--rot); border: 4px solid var(--grau);
+    color: #fff; font-family: var(--font-head); font-size: 30px; line-height: 56px; text-align: center;
+  }
+  h1, h2 { font-family: var(--font-head); font-weight: 400; font-size: 34px; line-height: 1.1; margin: 0; letter-spacing: .5px; }
+  h2:focus, h1:focus { outline: none; }
+
+  p { margin: 0 0 16px; }
+  .lead { font-size: 20px; }
+  .muted { color: var(--grau-dunkel); font-size: 15px; }
+  a { color: var(--rot); }
+  strong, b { font-weight: 700; }
+
+  section[hidden] { display: none; }
+
+  /* Formular */
+  label { display: block; font-weight: 700; margin: 0 0 6px; }
+  .field { margin: 0 0 20px; }
+  input[type="text"], input[type="email"] {
+    width: 100%; padding: 12px 14px; font: inherit; color: var(--text);
+    background: #fff; border: 2px solid var(--grau); border-radius: 0;
+  }
+  input[type="text"]:focus, input[type="email"]:focus { border-color: var(--rot); outline: none; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .check { display: flex; gap: 12px; align-items: flex-start; margin: 0 0 20px; font-weight: 400; }
+  .check input { flex: none; width: 24px; height: 24px; margin: 3px 0 0; accent-color: var(--rot); }
+  .error { color: var(--rot-dunkel); background: var(--rosa-hell); border-left: 6px solid var(--rot); padding: 10px 14px; margin: 0 0 20px; }
+  .error:empty { display: none; }
+
+  /* Buttons */
+  .btn {
+    display: inline-block; padding: 14px 28px; border: 2px solid var(--rot); border-radius: 0;
+    background: var(--rot); color: #fff; font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+    letter-spacing: .5px;
+  }
+  .btn:hover:not(:disabled) { background: var(--rot-dunkel); border-color: var(--rot-dunkel); }
+  .btn:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .btn.secondary { background: #fff; color: var(--rot); }
+  .btn.secondary:hover:not(:disabled) { background: var(--rot); color: #fff; }
+  .btn:disabled { background: var(--grau-hell); border-color: var(--grau-hell); color: var(--grau); cursor: not-allowed; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+
+  /* Video */
+  .video-box { position: relative; width: 100%; padding-top: 56.25%; background: var(--rot-dunkel); margin: 0 0 20px; }
+  .video-box iframe, .video-placeholder { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    padding: 16px; text-align: center; color: #fff;
+  }
+  .video-placeholder .muted { color: #fff; opacity: .85; font-size: 14px; max-width: 460px; }
+  .video-placeholder .btn { background: #fff; color: var(--rot); border-color: #fff; }
+  .video-placeholder .btn:hover { background: var(--creme); border-color: var(--creme); }
+
+  .box { border: 2px solid var(--grau-hell); border-left: 6px solid var(--rot); padding: 16px 18px; margin: 0 0 20px; }
+  .box p:last-child { margin-bottom: 0; }
+
+  /* Test */
+  .q-progress { display: flex; justify-content: space-between; font-size: 15px; color: var(--grau-dunkel); margin: 0 0 8px; }
+  .bar { height: 6px; background: var(--grau-hell); margin: 0 0 24px; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--rot); transition: width .25s ease; }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  legend { font-weight: 700; font-size: 21px; line-height: 1.35; padding: 0; margin: 0 0 18px; }
+  .opt {
+    display: flex; gap: 14px; align-items: flex-start; width: 100%; text-align: left;
+    padding: 14px 16px; margin: 0 0 10px; background: #fff; color: var(--text);
+    border: 2px solid var(--grau); border-radius: 0; font: inherit; font-weight: 400; cursor: pointer;
+  }
+  .opt:hover { border-color: var(--rot); }
+  .opt .letter { flex: none; width: 28px; height: 28px; line-height: 24px; text-align: center; border: 2px solid var(--grau); font-family: var(--font-head); font-size: 15px; }
+  .opt[aria-checked="true"] { border-color: var(--rot); background: var(--rosa-hell); }
+  .opt[aria-checked="true"] .letter { background: var(--rot); border-color: var(--rot); color: #fff; }
+  .opt { margin-bottom: 10px; }
+
+  .score { font-family: var(--font-head); font-size: 56px; line-height: 1; margin: 0 0 8px; }
+  .score.ok { color: var(--olive); }
+  .score.fail { color: var(--rot); }
+  .review { list-style: none; padding: 0; margin: 24px 0 0; }
+  .review li { border-left: 6px solid var(--rot); background: var(--creme); padding: 12px 16px; margin: 0 0 12px; }
+  .review .q { font-weight: 700; margin: 0 0 6px; }
+  .review .r { margin: 0 0 4px; font-size: 16px; }
+  .review .e { margin: 0; font-size: 15px; color: var(--grau-dunkel); }
+  .tag-wrong { color: var(--rot-dunkel); font-weight: 700; }
+  .tag-right { color: var(--olive); font-weight: 700; }
+
+  .docs { list-style: none; padding: 0; margin: 0 0 20px; }
+  .docs li { margin: 0 0 8px; }
+  footer { text-align: center; font-size: 14px; color: var(--grau-dunkel); padding: 48px 0 32px; }
+
+  @media (max-width: 520px) {
+    body { font-size: 17px; }
+    h1, h2 { font-size: 28px; }
+    .badge { width: 52px; height: 52px; line-height: 44px; font-size: 24px; }
+    .progress li { font-size: 11px; }
+    .btn { width: 100%; text-align: center; }
+    .lead { font-size: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bar > span { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <img class="logo-top" src="assets/logos/logo-konkordia.png" width="2362" height="526" alt="Gemeinde in der Konkordia – Evangelische Freikirche Bühl">
+
+  <ol class="progress" id="progress" aria-label="Fortschritt">
+    <li data-n="1">Start</li>
+    <li data-n="2">Video</li>
+    <li data-n="3">Test</li>
+    <li data-n="4">Leitlinie</li>
+    <li data-n="5">Fertig</li>
+  </ol>
+
+  <main>
+
+    <!-- 1 START -->
+    <section id="step-0" data-step="0" aria-labelledby="h-0">
+      <div class="step-head"><div class="badge" aria-hidden="true">1</div><h1 id="h-0" tabindex="-1">Start</h1></div>
+      <p class="lead"><strong>KI-Schulung für Mitarbeitende und Ehrenamtliche.</strong></p>
+      <p>Wer KI im Gemeindedienst nutzt, muss vorher geschult sein (EU AI Act, Art. 4). Die Schulung dauert etwa 20 Minuten: Video ansehen, kurzer Test, Leitlinie bestätigen.</p>
+      <form id="form-start" novalidate>
+        <div class="field">
+          <label for="name">Vor- und Nachname</label>
+          <input type="text" id="name" name="name" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">E-Mail-Adresse</label>
+          <input type="email" id="email" name="email" autocomplete="email" required inputmode="email">
+        </div>
+        <div class="hp" aria-hidden="true"><label>Website<input type="text" id="website" tabindex="-1" autocomplete="off"></label></div>
+        <label class="check" for="privacy">
+          <input type="checkbox" id="privacy">
+          <span>Ich bin einverstanden, dass Name, E-Mail-Adresse, Datum und Testergebnis als Nachweis der Schulung gespeichert und an das Gemeindebüro übermittelt werden. <span id="privacy-link-wrap"></span></span>
+        </label>
+        <div class="error" id="err-start" role="alert"></div>
+        <div class="actions"><button class="btn" type="submit">Schulung starten</button></div>
+      </form>
+    </section>
+
+    <!-- 2 VIDEO -->
+    <section id="step-1" data-step="1" aria-labelledby="h-1" hidden>
+      <div class="step-head"><div class="badge" aria-hidden="true">2</div><h2 id="h-1" tabindex="-1">Video</h2></div>
+      <p>Schau dir das Video an. Es dauert etwa zehn Minuten.</p>
+      <div class="video-box" id="video-box">
+        <div class="video-placeholder" id="video-placeholder">
+          <button class="btn" type="button" id="btn-video">Video laden</button>
+          <p class="muted">Beim Laden wird das Video von unserem Anbieter Subsplash abgerufen. Vorher findet keine Verbindung statt.</p>
+        </div>
+      </div>
+      <div class="box">
+        <p><strong>Zum Nachlesen:</strong> Die Lernübersicht fasst das Video als Skript zusammen.</p>
+        <p><a class="btn secondary" id="link-skript" target="_blank" rel="noopener">Skript öffnen / herunterladen (PDF)</a></p>
+      </div>
+      <label class="check" for="seen">
+        <input type="checkbox" id="seen">
+        <span>Ich habe das Video angesehen.</span>
+      </label>
+      <div class="actions"><button class="btn" type="button" id="btn-to-test" disabled>Weiter zum Test</button></div>
+    </section>
+
+    <!-- 3 TEST -->
+    <section id="step-2" data-step="2" aria-labelledby="h-2" hidden>
+      <div class="step-head"><div class="badge" aria-hidden="true">3</div><h2 id="h-2" tabindex="-1">Test</h2></div>
+      <div id="quiz-run">
+        <div class="q-progress"><span id="q-count"></span><span id="q-need"></span></div>
+        <div class="bar" aria-hidden="true"><span id="q-bar"></span></div>
+        <fieldset id="q-fieldset">
+          <legend id="q-prompt"></legend>
+          <div id="q-options" role="radiogroup" aria-labelledby="q-prompt"></div>
+        </fieldset>
+        <div class="actions"><button class="btn" type="button" id="btn-next" disabled>Weiter</button></div>
+      </div>
+      <div id="quiz-result" hidden>
+        <p class="score" id="res-score"></p>
+        <p class="lead" id="res-text"></p>
+        <ul class="review" id="res-review"></ul>
+        <div class="actions">
+          <button class="btn" type="button" id="btn-to-leitlinie" hidden>Weiter zur Leitlinie</button>
+          <button class="btn secondary" type="button" id="btn-retry" hidden>Test wiederholen</button>
+          <button class="btn secondary" type="button" id="btn-back-video" hidden>Video noch einmal ansehen</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 LEITLINIE -->
+    <section id="step-3" data-step="3" aria-labelledby="h-3" hidden>
+      <div class="step-head"><div class="badge" aria-hidden="true">4</div><h2 id="h-3" tabindex="-1">Leitlinie</h2></div>
+      <p class="lead">Test bestanden. Ein Schritt fehlt noch.</p>
+      <p>Bitte lies die Leitlinie zum Einsatz von KI in der Gemeinde in der Konkordia. Danach kannst du sie bestätigen.</p>
+      <p><a class="btn secondary" id="link-leitlinie" target="_blank" rel="noopener">Leitlinie öffnen (PDF)</a></p>
+      <form id="form-confirm" novalidate>
+        <label class="check" for="confirm">
+          <input type="checkbox" id="confirm" disabled>
+          <span>Ich habe die Leitlinie zum Einsatz von KI gelesen und verpflichte mich, sie einzuhalten.</span>
+        </label>
+        <p class="muted" id="confirm-hint">Die Bestätigung wird freigeschaltet, sobald du die Leitlinie geöffnet hast.</p>
+        <div class="error" id="err-confirm" role="alert"></div>
+        <div class="actions"><button class="btn" type="submit" id="btn-submit" disabled>Abschließen und Bestätigung senden</button></div>
+      </form>
+    </section>
+
+    <!-- 5 FERTIG -->
+    <section id="step-4" data-step="4" aria-labelledby="h-4" hidden>
+      <div class="step-head"><div class="badge" aria-hidden="true">5</div><h2 id="h-4" tabindex="-1">Geschafft</h2></div>
+      <p class="lead" id="done-lead"></p>
+      <p id="done-mail"></p>
+      <div class="box">
+        <p><strong>Nachlesen:</strong></p>
+        <ul class="docs">
+          <li><a id="done-leitlinie" target="_blank" rel="noopener">Leitlinie zum Einsatz von KI (PDF)</a></li>
+          <li><a id="done-skript" target="_blank" rel="noopener">Lernübersicht / Skript (PDF)</a></li>
+        </ul>
+      </div>
+      <p class="muted">„Prüft alles und behaltet das Gute.“ (1. Thessalonicher 5,21)</p>
+    </section>
+
+  </main>
+
+  <footer><a href="https://www.gemeinde-konkordia.de">gemeinde-konkordia.de</a></footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------------------------------------------------------- Konfiguration
+  var CONFIG = {
+    // URL der Google-Apps-Script-Web-App (siehe README). Leer = Testmodus: es wird nichts gesendet.
+    endpoint: "",
+    datenschutzUrl: "https://www.gemeinde-konkordia.de/datenschutz",
+    leitlinieUrl: "https://storage1.snappages.site/S74RKH/assets/files/Leitlinie-KI-Konkordia.pdf",
+    skriptUrl: "https://storage1.snappages.site/S74RKH/assets/files/Lernuebersicht_-Verantwortungsvoller-Umg-87.pdf",
+    videoSrc: "https://subsplash.com/u/konkordia/media/embed/d/2m9qt7c",
+    schulungVersion: "2026-09"
+  };
+
+  // ---------------------------------------------------------------- Test (aus quiz-ki-schulung.json)
+  var QUIZ = {
+    passThreshold: 0.8,
+    questions: [
+      { id: "q1", prompt: "Welche dieser Angaben darf nie in ein öffentliches KI-System eingegeben werden?",
+        options: [ {id:"a",text:"Die allgemeinen Gottesdienstzeiten"}, {id:"b",text:"Gebetsanliegen und Inhalte aus Seelsorgegesprächen"}, {id:"c",text:"Der Name der Gemeinde"}, {id:"d",text:"Eine öffentlich bekannte Bibelstelle"} ],
+        correct: "b",
+        explanation: "Gebetsanliegen, Seelsorgeinhalte, Spenderdaten, ChurchTools-Daten und Personal-/Finanzdaten gehören zu den sensiblen Daten, die nie in öffentliche KI-Systeme eingegeben werden dürfen." },
+      { id: "q2", prompt: "Wer trägt die Verantwortung für einen mit KI erstellten Text, der veröffentlicht wird?",
+        options: [ {id:"a",text:"Die KI selbst"}, {id:"b",text:"Niemand, da die KI automatisiert arbeitet"}, {id:"c",text:"Der Mensch, der ihn geprüft und freigegeben hat"}, {id:"d",text:"Der Anbieter der KI-Software"} ],
+        correct: "c",
+        explanation: "KI unterstützt, entscheidet aber nicht. Jeder Text, jede Veröffentlichung wird von einem Menschen geprüft und verantwortet." },
+      { id: "q3", prompt: "Was bedeutet der Begriff „Halluzination“ im Zusammenhang mit KI?",
+        options: [ {id:"a",text:"Ein technischer Absturz des Programms"}, {id:"b",text:"Die KI erzeugt überzeugend klingende, aber falsche Informationen"}, {id:"c",text:"Ein Sicherheitsupdate der KI"}, {id:"d",text:"Ein Datenschutzverstoß durch die KI"} ],
+        correct: "b",
+        explanation: "KI kann Fehler machen und formuliert dabei oft sehr überzeugend. Deshalb prüfen wir Aussagen, Zahlen und Quellen immer nach." },
+      { id: "q4", prompt: "Welche der folgenden gehört NICHT zu den drei Hauptformen von KI aus der Schulung?",
+        options: [ {id:"a",text:"Regelbasierte KI"}, {id:"b",text:"Maschinelles Lernen"}, {id:"c",text:"Generative KI"}, {id:"d",text:"Quantenbasierte KI"} ],
+        correct: "d",
+        explanation: "Die drei Hauptformen sind Regelbasierte KI (einfache KI), Maschinelles Lernen (ML) und Generative KI (GenAI). „Quantenbasierte KI“ ist kein Begriff aus der Schulung." },
+      { id: "q5", prompt: "Wann sollte ein Inhalt als KI-generiert gekennzeichnet werden?",
+        options: [ {id:"a",text:"Nie, das ist nur eine unverbindliche Empfehlung"}, {id:"b",text:"Ausnahmslos bei jeder Nutzung von KI, auch intern"}, {id:"c",text:"Wenn KI wesentlich beteiligt war, besonders bei veröffentlichten Bildern und Texten"}, {id:"d",text:"Nur bei Videos"} ],
+        correct: "c",
+        explanation: "War KI wesentlich beteiligt, machen wir das sichtbar – z. B. mit „KI-generiertes Bild“ oder „mit KI-Unterstützung erstellt“. Das gilt besonders für veröffentlichte Bilder, Grafiken und Texte." },
+      { id: "q6", prompt: "Was verlangt der EU AI Act (Art. 4) von Organisationen wie der GIDK?",
+        options: [ {id:"a",text:"Ein vollständiges Verbot jeglicher KI-Nutzung"}, {id:"b",text:"Ausreichende KI-Kompetenz der Mitarbeitenden, u. a. durch Schulung"}, {id:"c",text:"Die ausschließliche Nutzung deutscher KI-Anbieter"}, {id:"d",text:"Eine jährliche Meldung an das Finanzamt"} ],
+        correct: "b",
+        explanation: "Art. 4 der EU-KI-Verordnung verlangt von Organisationen, für ausreichende KI-Kompetenz ihrer Mitarbeitenden zu sorgen. Genau das leistet diese Schulung." },
+      { id: "q7", prompt: "In der KI-Ampel: Welche Farbe steht für „tabu / nicht zulässig“?",
+        options: [ {id:"a",text:"Grün"}, {id:"b",text:"Gelb"}, {id:"c",text:"Rot"}, {id:"d",text:"Blau"} ],
+        correct: "c",
+        explanation: "Rot steht für tabu, z. B. personenbezogene Daten eingeben, Seelsorgegespräche hochladen oder KI eigenständig über Menschen entscheiden lassen." },
+      { id: "q8", prompt: "Welcher Tipp gehört zu gutem Prompting, wie in der Schulung erklärt?",
+        options: [ {id:"a",text:"Möglichst wenig Kontext geben, damit die KI kreativer ist"}, {id:"b",text:"Ein konkretes Ziel und Format vorgeben, z. B. „als kurze Liste, maximal 5 Sätze“"}, {id:"c",text:"Die KI nie nachfragen lassen"}, {id:"d",text:"Immer die erste Antwort unverändert übernehmen"} ],
+        correct: "b",
+        explanation: "Kontext geben, Rolle festlegen, ein konkretes Ziel formulieren, das Format vorgeben und die KI nachfragen lassen – das sind die fünf Prompting-Tipps aus der Schulung." }
+    ]
+  };
+  var NEED = Math.ceil(QUIZ.questions.length * QUIZ.passThreshold - 1e-9); // 8 * 0,8 = 6,4 → 7
+
+  // ---------------------------------------------------------------- Zustand
+  var STORE_KEY = "gidk-ki-schulung";
+  var state = { step: 0, name: "", email: "", seen: false, passed: false, answers: {}, leitlinieOpened: false };
+  var quiz = { index: 0, picked: null };
+
+  function load() {
+    try {
+      var raw = sessionStorage.getItem(STORE_KEY);
+      if (raw) { var s = JSON.parse(raw); if (s && typeof s === "object") { for (var k in state) if (k in s) state[k] = s[k]; } }
+    } catch (e) {}
+    // Nicht wiederherstellbare Zustände absichern
+    if (state.step >= 3 && !state.passed) state.step = 2;
+    if (state.step >= 1 && (!state.name || !state.email)) state.step = 0;
+    if (state.step === 4) state.step = 3; // Abschluss nie ohne frisches Absenden anzeigen
+  }
+  function save() { try { sessionStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+  function clearStore() { try { sessionStorage.removeItem(STORE_KEY); } catch (e) {} }
+
+  // ---------------------------------------------------------------- Helfer
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+
+  var sections = document.querySelectorAll("section[data-step]");
+  var progress = $("progress").children;
+
+  function show(step, focus) {
+    state.step = step;
+    if (step === 4) clearStore(); else save(); // nach Abschluss keine Personendaten im Browser behalten
+    for (var i = 0; i < sections.length; i++) sections[i].hidden = (Number(sections[i].getAttribute("data-step")) !== step);
+    for (var j = 0; j < progress.length; j++) {
+      progress[j].className = j < step ? "done" : (j === step ? "current" : "");
+      if (j === step) progress[j].setAttribute("aria-current", "step"); else progress[j].removeAttribute("aria-current");
+    }
+    if (focus !== false) {
+      var h = $("h-" + step); if (h) h.focus({ preventScroll: true });
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }
+
+  // Links aus der Konfiguration
+  $("link-skript").href = CONFIG.skriptUrl;
+  $("link-leitlinie").href = CONFIG.leitlinieUrl;
+  $("done-skript").href = CONFIG.skriptUrl;
+  $("done-leitlinie").href = CONFIG.leitlinieUrl;
+  if (CONFIG.datenschutzUrl) {
+    $("privacy-link-wrap").innerHTML = '<a href="' + esc(CONFIG.datenschutzUrl) + '" target="_blank" rel="noopener">Datenschutzerklärung</a>';
+  }
+
+  // ---------------------------------------------------------------- Schritt 1: Start
+  $("form-start").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var name = $("name").value.trim();
+    var email = $("email").value.trim();
+    var err = $("err-start");
+    err.textContent = "";
+    if (name.length < 2 || name.indexOf(" ") < 1) { err.textContent = "Bitte gib deinen Vor- und Nachnamen ein."; $("name").focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = "Bitte gib eine gültige E-Mail-Adresse ein."; $("email").focus(); return; }
+    if (!$("privacy").checked) { err.textContent = "Bitte stimme der Speicherung zu, damit wir die Teilnahme dokumentieren können."; $("privacy").focus(); return; }
+    state.name = name; state.email = email;
+    show(1);
+  });
+
+  // ---------------------------------------------------------------- Schritt 2: Video
+  $("btn-video").addEventListener("click", function () {
+    var box = $("video-box");
+    box.innerHTML = "";
+    var f = document.createElement("iframe");
+    f.src = CONFIG.videoSrc;
+    f.title = "KI-Schulung GIDK (Video)";
+    f.setAttribute("frameborder", "0");
+    f.setAttribute("allowfullscreen", "");
+    f.setAttribute("webkitallowfullscreen", "");
+    f.setAttribute("mozallowfullscreen", "");
+    f.setAttribute("allow", "clipboard-read; clipboard-write; fullscreen");
+    box.appendChild(f);
+  });
+  $("seen").addEventListener("change", function () {
+    state.seen = this.checked; save();
+    $("btn-to-test").disabled = !this.checked;
+  });
+  $("btn-to-test").addEventListener("click", function () { startQuiz(); show(2); });
+
+  // ---------------------------------------------------------------- Schritt 3: Test
+  function startQuiz() {
+    quiz.index = 0; quiz.picked = null; state.answers = {}; state.passed = false; save();
+    $("quiz-run").hidden = false; $("quiz-result").hidden = true;
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    var q = QUIZ.questions[quiz.index];
+    var total = QUIZ.questions.length;
+    $("q-count").textContent = "Frage " + (quiz.index + 1) + " von " + total;
+    $("q-need").textContent = "Bestanden ab " + NEED + " richtigen Antworten";
+    $("q-bar").style.width = (quiz.index / total * 100) + "%";
+    $("q-prompt").textContent = q.prompt;
+    var wrap = $("q-options"); wrap.innerHTML = "";
+    quiz.picked = state.answers[q.id] || null;
+    q.options.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "opt";
+      b.setAttribute("role", "radio");
+      b.setAttribute("aria-checked", o.id === quiz.picked ? "true" : "false");
+      b.setAttribute("data-id", o.id);
+      b.innerHTML = '<span class="letter">' + o.id.toUpperCase() + '</span><span>' + esc(o.text) + '</span>';
+      b.addEventListener("click", function () { pick(o.id); });
+      wrap.appendChild(b);
+    });
+    $("btn-next").disabled = !quiz.picked;
+    $("btn-next").textContent = quiz.index === total - 1 ? "Test auswerten" : "Weiter";
+  }
+
+  function pick(id) {
+    quiz.picked = id;
+    var opts = $("q-options").children;
+    for (var i = 0; i < opts.length; i++) opts[i].setAttribute("aria-checked", opts[i].getAttribute("data-id") === id ? "true" : "false");
+    $("btn-next").disabled = false;
+  }
+
+  $("btn-next").addEventListener("click", function () {
+    var q = QUIZ.questions[quiz.index];
+    if (!quiz.picked) return;
+    state.answers[q.id] = quiz.picked; save();
+    if (quiz.index < QUIZ.questions.length - 1) { quiz.index++; renderQuestion(); $("q-prompt").scrollIntoView({ block: "nearest" }); }
+    else { evaluate(); }
+  });
+
+  function evaluate() {
+    var score = 0, wrong = [];
+    QUIZ.questions.forEach(function (q) {
+      if (state.answers[q.id] === q.correct) score++; else wrong.push(q);
+    });
+    var passed = score >= NEED;
+    state.passed = passed; save();
+
+    $("quiz-run").hidden = true; $("quiz-result").hidden = false;
+    var sc = $("res-score");
+    sc.textContent = score + " von " + QUIZ.questions.length;
+    sc.className = "score " + (passed ? "ok" : "fail");
+    $("res-text").textContent = passed
+      ? (wrong.length ? "Bestanden. Schau dir kurz an, was noch nicht ganz gesessen hat." : "Bestanden. Alles richtig!")
+      : "Noch nicht bestanden. Du brauchst mindestens " + NEED + " richtige Antworten. Lies die Erklärungen und versuche es noch einmal.";
+
+    var ul = $("res-review"); ul.innerHTML = "";
+    wrong.forEach(function (q) {
+      var mine = q.options.filter(function (o) { return o.id === state.answers[q.id]; })[0];
+      var right = q.options.filter(function (o) { return o.id === q.correct; })[0];
+      var li = document.createElement("li");
+      li.innerHTML =
+        '<p class="q">' + esc(q.prompt) + '</p>' +
+        '<p class="r"><span class="tag-wrong">Deine Antwort:</span> ' + esc(mine ? mine.text : "–") + '</p>' +
+        '<p class="r"><span class="tag-right">Richtig:</span> ' + esc(right.text) + '</p>' +
+        '<p class="e">' + esc(q.explanation) + '</p>';
+      ul.appendChild(li);
+    });
+
+    $("btn-to-leitlinie").hidden = !passed;
+    $("btn-retry").hidden = passed;
+    $("btn-back-video").hidden = passed;
+    var h = $("h-2"); if (h) h.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  $("btn-retry").addEventListener("click", function () { startQuiz(); window.scrollTo({ top: 0 }); });
+  $("btn-back-video").addEventListener("click", function () { show(1); });
+  $("btn-to-leitlinie").addEventListener("click", function () { show(3); syncConfirm(); });
+
+  // ---------------------------------------------------------------- Schritt 4: Leitlinie
+  function syncConfirm() {
+    var opened = !!state.leitlinieOpened;
+    $("confirm").disabled = !opened;
+    $("confirm-hint").hidden = opened;
+    $("btn-submit").disabled = !(opened && $("confirm").checked);
+  }
+  $("link-leitlinie").addEventListener("click", function () { state.leitlinieOpened = true; save(); syncConfirm(); });
+  $("confirm").addEventListener("change", syncConfirm);
+
+  $("form-confirm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var err = $("err-confirm"); err.textContent = "";
+    if (!state.passed || !$("confirm").checked) { err.textContent = "Bitte bestätige die Leitlinie."; return; }
+    var btn = $("btn-submit");
+    btn.disabled = true; btn.textContent = "Wird gesendet …";
+
+    var payload = {
+      name: state.name, email: state.email, answers: state.answers,
+      leitlinieBestaetigt: true, schulungVersion: CONFIG.schulungVersion,
+      website: $("website").value // Honeypot
+    };
+
+    function fail(msg) {
+      err.textContent = msg;
+      btn.disabled = false; btn.textContent = "Abschließen und Bestätigung senden";
+    }
+    function ok(mailSent) { finish(mailSent); }
+
+    if (!CONFIG.endpoint) { ok(false); return; } // Testmodus
+
+    fetch(CONFIG.endpoint, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok) ok(true);
+        else fail((res && res.message) || "Das Senden hat nicht geklappt. Bitte versuche es noch einmal oder melde dich im Gemeindebüro.");
+      })
+      .catch(function () { fail("Keine Verbindung zum Server. Bitte prüfe dein Internet und versuche es noch einmal. Deine Eingaben bleiben erhalten."); });
+  });
+
+  // ---------------------------------------------------------------- Schritt 5: Fertig
+  function finish(mailSent) {
+    $("done-lead").textContent = state.name + ", du bist für die KI-Nutzung in der GIDK freigegeben.";
+    $("done-mail").textContent = mailSent
+      ? "Eine Bestätigung ist an " + state.email + " unterwegs. Das Gemeindebüro wurde ebenfalls informiert. Schau bei Bedarf im Spam-Ordner nach."
+      : "Testmodus: Es wurde keine E-Mail versendet.";
+    clearStore();
+    show(4);
+  }
+
+  // ---------------------------------------------------------------- Start
+  load();
+  $("name").value = state.name; $("email").value = state.email;
+  $("seen").checked = !!state.seen; $("btn-to-test").disabled = !state.seen;
+  if (state.step === 2) { startQuiz(); }
+  show(state.step, false);
+  syncConfirm();
+})();
+</script>
+</body>
+</html>
