@@ -118,6 +118,8 @@
   .video-placeholder .btn:hover { background: var(--creme); border-color: var(--creme); }
 
   .kennzeichnung { margin: -8px 0 24px; }
+  .form-box { margin: 0 0 24px; min-height: 120px; }
+  .form-box iframe { display: block; width: 100%; border: 0; }
 
   .box { border: 2px solid var(--grau-hell); border-left: 6px solid var(--rot); padding: 16px 18px; margin: 0 0 20px; }
   .box p:last-child { margin-bottom: 0; }
@@ -184,24 +186,11 @@
     <section id="step-0" data-step="0" aria-labelledby="h-0">
       <div class="step-head"><div class="badge" aria-hidden="true">1</div><h1 id="h-0" tabindex="-1">Start</h1></div>
       <p class="lead"><strong>KI-Schulung für Mitarbeitende und Ehrenamtliche.</strong></p>
-      <p>Wer KI im Gemeindedienst nutzt, muss vorher geschult sein (EU AI Act, Art. 4). Die Schulung dauert etwa 20 Minuten: Video ansehen, kurzer Test, Leitlinie bestätigen.</p>
-      <form id="form-start" novalidate>
-        <div class="field">
-          <label for="name">Vor- und Nachname</label>
-          <input type="text" id="name" name="name" autocomplete="name" required>
-        </div>
-        <div class="field">
-          <label for="email">E-Mail-Adresse</label>
-          <input type="email" id="email" name="email" autocomplete="email" required inputmode="email">
-        </div>
-        <div class="hp" aria-hidden="true"><label>Website<input type="text" id="website" tabindex="-1" autocomplete="off"></label></div>
-        <label class="check" for="privacy">
-          <input type="checkbox" id="privacy">
-          <span>Ich bin einverstanden, dass Name, E-Mail-Adresse, Datum und Testergebnis als Nachweis der Schulung gespeichert und an das Gemeindebüro übermittelt werden. <span id="privacy-link-wrap"></span></span>
-        </label>
-        <div class="error" id="err-start" role="alert"></div>
-        <div class="actions"><button class="btn" type="submit">Schulung starten</button></div>
-      </form>
+      <p>Wer KI im Gemeindedienst nutzt, muss vorher geschult sein (EU AI Act, Art. 4). Die Schulung dauert etwa 20 Minuten: Video ansehen, kurzer Test, Leitlinie bestätigen, Bestätigung absenden.</p>
+      <div class="box">
+        <p><strong>Datenschutz:</strong> Am Ende trägst du deinen Namen und deine E-Mail-Adresse in ein Formular ein. Es wird von unserem Anbieter Subsplash bereitgestellt. Die Angaben dienen als Nachweis der Schulung und gehen an das Gemeindebüro. Du erhältst eine Bestätigung per E-Mail. <span id="privacy-link-wrap"></span></p>
+      </div>
+      <div class="actions"><button class="btn" type="button" id="btn-start">Schulung starten</button></div>
     </section>
 
     <!-- 2 VIDEO -->
@@ -253,25 +242,23 @@
     <!-- 4 LEITLINIE -->
     <section id="step-3" data-step="3" aria-labelledby="h-3" hidden>
       <div class="step-head"><div class="badge" aria-hidden="true">4</div><h2 id="h-3" tabindex="-1">Leitlinie</h2></div>
-      <p class="lead">Test bestanden. Ein Schritt fehlt noch.</p>
+      <p class="lead">Test bestanden. Jetzt fehlt noch die Leitlinie.</p>
       <p>Bitte lies die Leitlinie zum Einsatz von KI in der Gemeinde in der Konkordia. Danach kannst du sie bestätigen.</p>
       <p><a class="btn secondary" id="link-leitlinie" target="_blank" rel="noopener">Leitlinie öffnen (PDF)</a></p>
-      <form id="form-confirm" novalidate>
-        <label class="check" for="confirm">
-          <input type="checkbox" id="confirm" disabled>
-          <span>Ich habe die Leitlinie zum Einsatz von KI gelesen und verpflichte mich, sie einzuhalten.</span>
-        </label>
-        <p class="muted" id="confirm-hint">Die Bestätigung wird freigeschaltet, sobald du die Leitlinie geöffnet hast.</p>
-        <div class="error" id="err-confirm" role="alert"></div>
-        <div class="actions"><button class="btn" type="submit" id="btn-submit" disabled>Abschließen und Bestätigung senden</button></div>
-      </form>
+      <label class="check" for="confirm">
+        <input type="checkbox" id="confirm" disabled>
+        <span>Ich habe die Leitlinie zum Einsatz von KI gelesen und verpflichte mich, sie einzuhalten.</span>
+      </label>
+      <p class="muted" id="confirm-hint">Die Bestätigung wird freigeschaltet, sobald du die Leitlinie geöffnet hast.</p>
+      <div class="actions"><button class="btn" type="button" id="btn-to-form" disabled>Weiter zur Bestätigung</button></div>
     </section>
 
     <!-- 5 FERTIG -->
     <section id="step-4" data-step="4" aria-labelledby="h-4" hidden>
-      <div class="step-head"><div class="badge" aria-hidden="true">5</div><h2 id="h-4" tabindex="-1">Geschafft</h2></div>
-      <p class="lead" id="done-lead"></p>
-      <p id="done-mail"></p>
+      <div class="step-head"><div class="badge" aria-hidden="true">5</div><h2 id="h-4" tabindex="-1">Fertig</h2></div>
+      <p class="lead">Letzter Schritt: Bestätigung absenden.</p>
+      <p>Trage deinen Namen und deine E-Mail-Adresse ein und sende das Formular ab. Danach erhältst du eine Bestätigung per E-Mail, und das Gemeindebüro wird informiert. <strong>Erst mit dem Absenden ist die Schulung abgeschlossen.</strong></p>
+      <div id="form-box" class="form-box"></div>
       <div class="box">
         <p><strong>Nachlesen:</strong></p>
         <ul class="docs">
@@ -293,13 +280,13 @@
 
   // ---------------------------------------------------------------- Konfiguration
   var CONFIG = {
-    // URL der Google-Apps-Script-Web-App (siehe README). Leer = Testmodus: es wird nichts gesendet.
-    endpoint: "",
+    // Subsplash-Formular (Abschluss). Den Pfad aus dem Einbettungscode des Formulars übernehmen.
+    formSrc: "https://subsplash.com/u/-S74RKH/forms/d/2d70f572-a281-4d21-9fe3-10848cf30e0d?embed=1",
+    formOrigin: "https://subsplash.com",
     datenschutzUrl: "https://www.gemeinde-konkordia.de/datenschutz",
     leitlinieUrl: "https://storage1.snappages.site/S74RKH/assets/files/Leitlinie-KI-Konkordia.pdf",
     skriptUrl: "https://storage1.snappages.site/S74RKH/assets/files/Lernuebersicht_-Verantwortungsvoller-Umg-87.pdf",
-    videoSrc: "https://subsplash.com/u/konkordia/media/embed/d/2m9qt7c",
-    schulungVersion: "2026-09"
+    videoSrc: "https://subsplash.com/u/konkordia/media/embed/d/2m9qt7c"
   };
 
   // ---------------------------------------------------------------- Test (aus quiz-ki-schulung.json)
@@ -344,7 +331,7 @@
 
   // ---------------------------------------------------------------- Zustand
   var STORE_KEY = "gidk-ki-schulung";
-  var state = { step: 0, name: "", email: "", seen: false, passed: false, answers: {}, leitlinieOpened: false };
+  var state = { step: 0, seen: false, passed: false, answers: {}, leitlinieOpened: false }; // keine Personendaten
   var quiz = { index: 0, picked: null };
 
   function load() {
@@ -354,11 +341,9 @@
     } catch (e) {}
     // Nicht wiederherstellbare Zustände absichern
     if (state.step >= 3 && !state.passed) state.step = 2;
-    if (state.step >= 1 && (!state.name || !state.email)) state.step = 0;
-    if (state.step === 4) state.step = 3; // Abschluss nie ohne frisches Absenden anzeigen
+    if (state.step === 4 && !state.leitlinieOpened) state.step = 3;
   }
   function save() { try { sessionStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
-  function clearStore() { try { sessionStorage.removeItem(STORE_KEY); } catch (e) {} }
 
   // ---------------------------------------------------------------- Helfer
   function $(id) { return document.getElementById(id); }
@@ -368,8 +353,8 @@
   var progress = $("progress").children;
 
   function show(step, focus) {
-    state.step = step;
-    if (step === 4) clearStore(); else save(); // nach Abschluss keine Personendaten im Browser behalten
+    state.step = step; save();
+    if (step === 4) loadForm();
     for (var i = 0; i < sections.length; i++) sections[i].hidden = (Number(sections[i].getAttribute("data-step")) !== step);
     for (var j = 0; j < progress.length; j++) {
       progress[j].className = j < step ? "done" : (j === step ? "current" : "");
@@ -391,18 +376,7 @@
   }
 
   // ---------------------------------------------------------------- Schritt 1: Start
-  $("form-start").addEventListener("submit", function (ev) {
-    ev.preventDefault();
-    var name = $("name").value.trim();
-    var email = $("email").value.trim();
-    var err = $("err-start");
-    err.textContent = "";
-    if (name.length < 2 || name.indexOf(" ") < 1) { err.textContent = "Bitte gib deinen Vor- und Nachnamen ein."; $("name").focus(); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = "Bitte gib eine gültige E-Mail-Adresse ein."; $("email").focus(); return; }
-    if (!$("privacy").checked) { err.textContent = "Bitte stimme der Speicherung zu, damit wir die Teilnahme dokumentieren können."; $("privacy").focus(); return; }
-    state.name = name; state.email = email;
-    show(1);
-  });
+  $("btn-start").addEventListener("click", function () { show(1); });
 
   // ---------------------------------------------------------------- Schritt 2: Video
   $("btn-video").addEventListener("click", function () {
@@ -514,54 +488,37 @@
     var opened = !!state.leitlinieOpened;
     $("confirm").disabled = !opened;
     $("confirm-hint").hidden = opened;
-    $("btn-submit").disabled = !(opened && $("confirm").checked);
+    $("btn-to-form").disabled = !(opened && $("confirm").checked);
   }
   $("link-leitlinie").addEventListener("click", function () { state.leitlinieOpened = true; save(); syncConfirm(); });
   $("confirm").addEventListener("change", syncConfirm);
-
-  $("form-confirm").addEventListener("submit", function (ev) {
-    ev.preventDefault();
-    var err = $("err-confirm"); err.textContent = "";
-    if (!state.passed || !$("confirm").checked) { err.textContent = "Bitte bestätige die Leitlinie."; return; }
-    var btn = $("btn-submit");
-    btn.disabled = true; btn.textContent = "Wird gesendet …";
-
-    var payload = {
-      name: state.name, email: state.email, answers: state.answers,
-      leitlinieBestaetigt: true, schulungVersion: CONFIG.schulungVersion,
-      website: $("website").value // Honeypot
-    };
-
-    function fail(msg) {
-      err.textContent = msg;
-      btn.disabled = false; btn.textContent = "Abschließen und Bestätigung senden";
-    }
-    function ok(mailSent) { finish(mailSent); }
-
-    if (!CONFIG.endpoint) { ok(false); return; } // Testmodus
-
-    fetch(CONFIG.endpoint, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) })
-      .then(function (r) { return r.json(); })
-      .then(function (res) {
-        if (res && res.ok) ok(true);
-        else fail((res && res.message) || "Das Senden hat nicht geklappt. Bitte versuche es noch einmal oder melde dich im Gemeindebüro.");
-      })
-      .catch(function () { fail("Keine Verbindung zum Server. Bitte prüfe dein Internet und versuche es noch einmal. Deine Eingaben bleiben erhalten."); });
+  $("btn-to-form").addEventListener("click", function () {
+    if (!state.passed || !state.leitlinieOpened || !$("confirm").checked) return;
+    show(4);
   });
 
-  // ---------------------------------------------------------------- Schritt 5: Fertig
-  function finish(mailSent) {
-    $("done-lead").textContent = state.name + ", du bist für die KI-Nutzung in der GIDK freigegeben.";
-    $("done-mail").textContent = mailSent
-      ? "Eine Bestätigung ist an " + state.email + " unterwegs. Das Gemeindebüro wurde ebenfalls informiert. Schau bei Bedarf im Spam-Ordner nach."
-      : "Testmodus: Es wurde keine E-Mail versendet.";
-    clearStore();
-    show(4);
+  // ---------------------------------------------------------------- Schritt 5: Formular (Subsplash)
+  var formFrame = null;
+  function loadForm() {
+    if (formFrame) return;
+    formFrame = document.createElement("iframe");
+    formFrame.src = CONFIG.formSrc;
+    formFrame.title = "Bestätigung der KI-Schulung (Formular)";
+    formFrame.height = "700";
+    formFrame.setAttribute("frameborder", "0");
+    formFrame.setAttribute("scrolling", "no");
+    formFrame.setAttribute("allow", "clipboard-read; clipboard-write");
+    $("form-box").appendChild(formFrame);
   }
+  // Subsplash meldet die Höhe des Formulars per postMessage (wie im offiziellen Embed-Skript)
+  window.addEventListener("message", function (e) {
+    if (!formFrame || e.origin !== CONFIG.formOrigin || e.source !== formFrame.contentWindow || !e.data) return;
+    if (e.data.pageHeight) formFrame.height = e.data.pageHeight;
+    if (e.data.eventType === "route transition") $("form-box").scrollIntoView({ block: "start" });
+  });
 
   // ---------------------------------------------------------------- Start
   load();
-  $("name").value = state.name; $("email").value = state.email;
   $("seen").checked = !!state.seen; $("btn-to-test").disabled = !state.seen;
   if (state.step === 2) { startQuiz(); }
   show(state.step, false);
